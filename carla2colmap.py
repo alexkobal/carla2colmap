@@ -11,14 +11,14 @@ class DataConverter:
         Parameters
         -------
         data: ndarray (structured or homogeneous), Iterable, dict, or DataFrame (same as data in pandas.DataFrame)
-            it shoud have a shape of (N, 6) as [x y z pitch yaw roll] columns
+            it shoud have a shape of (N, 6) as ['x', 'y', 'z', 'pitch', 'yaw', 'roll'] columns
 
         Returns
         -------
-        ndarray of shape (N, 7) with [qw qx qy qz tx ty tz] columns ready to use in colmap
+        ndarray of shape (N, 7) with ['qw', 'qx', 'qy', 'qz', 'tx', 'ty', 'tz'] columns ready to use in colmap
         """
         df = pd.DataFrame(data, columns=('z', 'x', 'y', 'pitch', 'yaw', 'roll')) # xyz -> zxy world coordinate conversion
-        df.yaw = -df.yaw # negate rotation
+        df.loc[:, ['pitch', 'yaw', 'roll']] = -df.loc[:, ['pitch', 'yaw', 'roll']] # negate rotation
 
         ret_df = pd.DataFrame() # creating return DataFrame
 
