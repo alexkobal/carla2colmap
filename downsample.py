@@ -6,9 +6,14 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import sys
-sys.path.insert(1, "../GIT/colmap/scripts/python") #needed for colmap database reading
+sys.path.insert(1, "/data/colmap/scripts/python") #needed for colmap database reading
 from database import COLMAPDatabase
 from carla2colmap import DataConverter
+
+abspath = os.path.abspath(__file__)
+dname = os.path.dirname(abspath)
+os.chdir(dname)
+print(os.getcwd())
 
 dir = './images'
 # Check whether the specified path exists or not
@@ -58,8 +63,13 @@ for index, row in selected.iterrows():
 #selected['image_id'] = np.arange(1, result_sample_num+1)
 
 # we need the image_id to match to those in the database
-db = COLMAPDatabase.connect('./database.db')
-colmap_df = pd.read_sql_query("SELECT * FROM images", db)
+try:
+    db = COLMAPDatabase.connect('./database.db')
+    colmap_df = pd.read_sql_query("SELECT * FROM images", db)
+except:
+    raise Exception("Some problem with the DB")
+finally:
+    db.close()
 colmap_df = colmap_df[['image_id', 'name']]
 
 selected = selected.merge(colmap_df, how='left', left_on='image_name', right_on='name')
