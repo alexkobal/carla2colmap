@@ -19,7 +19,7 @@ class DataConverter:
         """
         df = pd.DataFrame(data, columns=('z', 'x', 'y', 'pitch', 'yaw', 'roll')) # xyz -> zxy world coordinate conversion
         df.loc[:, ['pitch', 'yaw', 'roll']] = -df.loc[:, ['pitch', 'yaw', 'roll']] # negate rotation
-
+        df.y = -df.y #y axes should be inverted
         ret_df = pd.DataFrame() # creating return DataFrame
 
         # convert from euler angles to quaternions

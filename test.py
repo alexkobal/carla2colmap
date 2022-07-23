@@ -28,7 +28,6 @@ df.loc[:, ['qw', 'qx', 'qy', 'qz', 'tx', 'ty', 'tz']] = 0
 selected = df[['image_id', 'qw', 'qx', 'qy', 'qz', 'tx', 'ty', 'tz', 'camera_id', 'image_name']].copy()
 
 result = DataConverter.convert(test_input)
-print(result.shape)
 selected.loc[:, ['qw', 'qx', 'qy', 'qz', 'tx', 'ty', 'tz']] = result
 selected.to_csv('./raw_images_test_framework.csv', sep=' ', header=False, index=False)
 

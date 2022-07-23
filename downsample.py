@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import sys
+sys.path.insert(1, "../GIT/colmap/scripts/python")
 sys.path.insert(1, "/data/colmap/scripts/python") #needed for colmap database reading
 from database import COLMAPDatabase
 from carla2colmap import DataConverter
