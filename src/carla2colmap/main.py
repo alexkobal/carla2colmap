@@ -4,6 +4,7 @@ st.init()
 import argparse
 import os
 from util import C2CUtils
+from downsampler import Downsampler
 
 
 parser = argparse.ArgumentParser(prog='carla2colmap',usage='%(prog)s [options] <colmap working directory path> <input images path>',\
@@ -39,13 +40,16 @@ elif st.USE_CAM:
     st.IN_CAM_PATH = os.path.abspath(st.IN_CAM_PATH)
 
 def print_settings():
+    print('########## CONFIG ###########')
     print('COLMAP_PRJ_WD:', st.COLMAP_PRJ_WD)
     print('IN_IMG_PATH:', st.IN_IMG_PATH)
     print('IN_CAM_PATH:', st.IN_CAM_PATH)
     print('USE_CAM:', st.USE_CAM)
     print('SAMPLE_NUM:', st.SAMPLE_NUM)
+    print('#############################')
 
 print_settings()
 
 
-C2CUtils.downsample_images()
+downsampler = Downsampler()
+downsampler.downsample()

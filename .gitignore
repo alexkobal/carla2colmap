@@ -4,3 +4,5 @@ dense
 sparse
 !sparse/model
 generatedFiles
+__pycache__/
+.ipynb_checkpoints/
