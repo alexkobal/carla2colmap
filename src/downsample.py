@@ -1,4 +1,11 @@
 import os
+# Changing working direa
+abspath = os.path.abspath(__file__)
+dname = os.path.dirname(abspath)
+os.chdir(dname)
+os.chdir('../')
+print("Current working directory:\n", os.getcwd())
+
 import glob
 import shutil
 from matplotlib import projections
@@ -11,10 +18,6 @@ sys.path.insert(1, "/data/colmap/scripts/python") #needed for colmap database re
 from database import COLMAPDatabase
 from carla2colmap import DataConverter
 
-abspath = os.path.abspath(__file__)
-dname = os.path.dirname(abspath)
-os.chdir(dname)
-print(os.getcwd())
 
 dir = './images'
 # Check whether the specified path exists or not

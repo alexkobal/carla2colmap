@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(1, "/home/sandor/GIT/colmap/scripts/python")
+sys.path.insert(1, "/data/colmap/scripts/python")
 import read_write_model as rw
 
 model_path = "./sparse/model"
