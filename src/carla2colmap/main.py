@@ -5,6 +5,7 @@ import argparse
 import os
 from util import C2CUtils
 from downsampler import Downsampler
+import pycolmap
 
 
 parser = argparse.ArgumentParser(prog='carla2colmap',usage='%(prog)s [options] <colmap working directory path> <input images path>',\
@@ -50,6 +51,13 @@ def print_settings():
 
 print_settings()
 
-
+# Downsampling images and extracting camera poses if camera info is provided
 downsampler = Downsampler()
-downsampler.downsample()
+downsampled_df = downsampler.downsample()
+print(downsampled_df.info())
+
+# Creating database
+database_path = os.path.join(st.COLMAP_PRJ_WD, 'database.db')
+images_path = os.path.join(st.COLMAP_PRJ_WD, 'images')
+os.remove(database_path)
+pycolmap.extract_features(database_path, images_path)
