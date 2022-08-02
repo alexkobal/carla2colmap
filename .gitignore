@@ -6,3 +6,5 @@ sparse
 generatedFiles
 __pycache__/
 .ipynb_checkpoints/
+database.db
+*.log
