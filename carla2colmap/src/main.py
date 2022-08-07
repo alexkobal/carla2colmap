@@ -10,7 +10,6 @@ from database import COLMAPDatabase, blob_to_array
 import pandas as pd
 import numpy as np
 
-
 parser = argparse.ArgumentParser(prog='carla2colmap',usage='%(prog)s [options] <colmap working directory path> <input images path>',\
                     description='Make input data from carla suitable for colmap reconstruction')
 parser.add_argument('work_dir', action='store', type=str)
@@ -20,20 +19,19 @@ parser.add_argument('-c', action='store', type=str)
 
 args = parser.parse_args()
 
-st.COLMAP_PRJ_WD = args.work_dir
-st.IN_IMG_PATH = args.img_input
-st.IN_CAM_PATH = args.c if args.c is not None else ''
+st.COLMAP_PRJ_WD = args.work_dir.strip()
+st.IN_IMG_PATH = args.img_input.strip()
+st.IN_CAM_PATH = args.c.strip() if args.c is not None else ''
 st.USE_CAM = args.c is not None
 st.SAMPLE_NUM = args.n if args.n is not None else -1
 
-
 if not os.path.isdir(st.COLMAP_PRJ_WD):
-    raise Exception('The WD path specified does not exist')
+    raise Exception('The WD path specified does not exist ' + str(st.COLMAP_PRJ_WD))
 else:
     st.COLMAP_PRJ_WD = os.path.abspath(st.COLMAP_PRJ_WD)
 
 if not os.path.isdir(st.IN_IMG_PATH):
-    raise Exception('The input image path specified does not exist')
+    raise Exception('The input image path specified does not exist ' + str(st.IN_IMG_PATH))
 else:
     st.IN_IMG_PATH = os.path.abspath(st.IN_IMG_PATH)
 
