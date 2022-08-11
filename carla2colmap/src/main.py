@@ -9,6 +9,7 @@ import pycolmap
 from database import COLMAPDatabase, blob_to_array
 import pandas as pd
 import numpy as np
+import read_write_model as rw_model
 
 parser = argparse.ArgumentParser(prog='carla2colmap',usage='%(prog)s [options] <colmap working directory path> <input images path>',\
                     description='Make input data from carla suitable for colmap reconstruction')
@@ -59,9 +60,9 @@ downsampled_df = downsampler.downsample()
 # Creating database
 database_path = os.path.join(st.COLMAP_PRJ_WD, 'database.db')
 images_path = os.path.join(st.COLMAP_PRJ_WD, 'images')
- # if os.path.exists(database_path):
- #     os.remove(database_path)
- # pycolmap.extract_features(database_path, images_path)
+if os.path.exists(database_path):
+    os.remove(database_path)
+pycolmap.extract_features(database_path, images_path)
 
 if st.USE_CAM:
     # Desired Output format
@@ -94,6 +95,7 @@ if st.USE_CAM:
 
     # cameras.txt
     cameras_df = cameras_df[['camera_id', 'model', 'width', 'height', 'params']]
+    cameras_df.model = cameras_df.model.apply(lambda x: rw_model.CAMERA_MODEL_IDS[x].model_name)
     cameras_df.params = cameras_df.params.apply(lambda x: blob_to_array(x, np.float64))
     params = np.stack(cameras_df.params.to_numpy())
     for i in range(params.shape[1]):

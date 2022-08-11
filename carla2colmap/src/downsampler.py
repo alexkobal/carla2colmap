@@ -28,8 +28,9 @@ class Downsampler:
 
     def __init_model_folder(self):
         # Check whether the specified path exists or not
+        print("DIR:", [self.__cam_model_dir])
         if not os.path.exists(self.__cam_model_dir):
-            os.mkdir(self.__cam_model_dir)
+            os.makedirs(self.__cam_model_dir)
         # remove all files in ./sparse/model directory
         for f in os.listdir(self.__cam_model_dir):
             os.remove(os.path.join(self.__cam_model_dir, f))
