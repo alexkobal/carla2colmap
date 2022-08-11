@@ -1,6 +1,11 @@
 monopointcloud
+project
 images
 dense
 sparse
 !sparse/model
 generatedFiles
+__pycache__/
+.ipynb_checkpoints/
+database.db*
+*.log
