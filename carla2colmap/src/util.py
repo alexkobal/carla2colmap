@@ -11,8 +11,7 @@ class C2CUtils:
 
         Parameters
         -------
-        data: ndarray (structured or homogeneous), Iterable, dict, or DataFrame (same as data in pandas.DataFrame)
-            it shoud have a shape of (N, 6) as ['x', 'y', 'z', 'pitch', 'yaw', 'roll'] columns
+        data: ndarray of shape (N, 6) as ['x', 'y', 'z', 'pitch', 'yaw', 'roll'] columns
 
         Returns
         -------
@@ -20,7 +19,7 @@ class C2CUtils:
         """
         df = pd.DataFrame(data, columns=('z', 'x', 'y', 'pitch', 'yaw', 'roll')) # xyz -> zxy world coordinate conversion
         df.loc[:, ['pitch', 'yaw', 'roll']] = -df.loc[:, ['pitch', 'yaw', 'roll']] # negate rotation
-        df.y = -df.y #y axes should be inverted
+        df.y = -df.y #y axis should be inverted
         ret_df = pd.DataFrame() # creating return DataFrame
 
         # convert from euler angles to quaternions

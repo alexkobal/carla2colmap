@@ -17,11 +17,13 @@ parser.add_argument('work_dir', action='store', type=str)
 parser.add_argument('img_input', action='store', type=str)
 parser.add_argument('-n', action='store', type=int)
 parser.add_argument('-c', action='store', type=str)
+parser.add_argument('-i', action='store', type=str)
 
 args = parser.parse_args()
 
 st.COLMAP_PRJ_WD = args.work_dir.strip()
 st.IN_IMG_PATH = args.img_input.strip()
+st.IN_IMG_FOLDER = args.i if args.i is not None else ''
 st.IN_CAM_PATH = args.c.strip() if args.c is not None else ''
 st.USE_CAM = args.c is not None
 st.SAMPLE_NUM = args.n if args.n is not None else -1
@@ -46,6 +48,7 @@ def print_settings():
     print('########## CONFIG ###########')
     print('COLMAP_PRJ_WD:', st.COLMAP_PRJ_WD)
     print('IN_IMG_PATH:', st.IN_IMG_PATH)
+    print('IN+IMG_FOLDER: ', st.IN_IMG_FOLDER)
     print('IN_CAM_PATH:', st.IN_CAM_PATH)
     print('USE_CAM:', st.USE_CAM)
     print('SAMPLE_NUM:', st.SAMPLE_NUM)
@@ -81,10 +84,12 @@ if st.USE_CAM:
     # Creating model files
     # images.txt
     images_df = images_df[['image_id', 'camera_id', 'name']]
-    downsampled_df = downsampled_df.merge(images_df, how='left', left_on='image_name', right_on='name')
-    downsampled_df = downsampled_df[['image_id', 'qw', 'qx', 'qy', 'qz', 'tx', 'ty', 'tz', 'camera_id', 'image_name']]
+    images_txt_df = downsampled_df.merge(images_df, how='left', left_on='image_name', right_on='name')
+    images_txt_df = images_txt_df[['image_id', 'qw', 'qx', 'qy', 'qz', 'tx', 'ty', 'tz', 'camera_id', 'image_name']]
+    # share intrinsics
+    images_txt_df.camera_id = cameras_df.camera_id.iloc[0]
     raw_images_path = os.path.join(st.COLMAP_PRJ_WD, 'sparse/model/raw_images.csv')
-    downsampled_df.to_csv(raw_images_path, sep=' ', header=False, index=False)
+    images_txt_df.to_csv(raw_images_path, sep=' ', header=False, index=False)
     with open(raw_images_path, 'r') as file:
         filedata = file.read()
     filedata = filedata.replace('\n', '\n\n')
@@ -101,6 +106,7 @@ if st.USE_CAM:
     for i in range(params.shape[1]):
         cameras_df['param_' + str(i)] = params[:, i]
     cameras_df.drop('params', axis=1, inplace=True)
+    cameras_df['param_0'] = downsampled_df['focal'].to_numpy(copy=True)
     cameras_df.to_csv(os.path.join(st.COLMAP_PRJ_WD, 'sparse/model/cameras.txt'), sep=' ', header=False, index=False)
 
     # points3D.txt
