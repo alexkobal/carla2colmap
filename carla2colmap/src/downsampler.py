@@ -37,7 +37,9 @@ class Downsampler:
 
     def __read_images(self):
         # collecting image data file names
-        images = glob.glob(st.IN_IMG_PATH + '/**/semseg/**') #TODO Clarify how the folder structure will look like in the final pipeline
+        images = glob.glob(st.IN_IMG_PATH + '/**/'+ st.IN_IMG_FOLDER +'/**')
+        if len(images) == 0: 
+            raise Exception('No images found in the specified folder with the specified path')
         images.sort()
         images = np.array(images, dtype=str)
         self.__df['in_image'] = images
@@ -46,12 +48,23 @@ class Downsampler:
         cameras = glob.glob(st.IN_CAM_PATH + '/**/camera.txt')
         cameras.sort()
         cameras = np.array(cameras)
+        focals = glob.glob(st.IN_CAM_PATH + '/**/focal.txt')
+        focals.sort()
+        focals = np.array(focals)
+
 
         cam_df = pd.DataFrame()
-        for c in cameras:
-            cam_df = pd.concat([cam_df, pd.read_csv(c, sep=' ', names=['x', 'y', 'z', 'pitch', 'yaw', 'roll'])])
+        for c, f in zip(cameras, focals):
+            cam_file_df = pd.read_csv(c, sep=' ', names=['x', 'y', 'z', 'pitch', 'yaw', 'roll'])
+            focal_f = .0
+            with open(f, 'r') as fp:
+                focal_f = float(fp.readline().strip())
+            cam_file_df['focal'] = focal_f
+            cam_df = pd.concat([cam_df, cam_file_df])
 
-        self.__df.loc[:, ['qw', 'qx', 'qy', 'qz', 'tx', 'ty', 'tz']] = C2CUtils.convert_cam_pos(cam_df.to_numpy(copy=True))
+
+        self.__df.loc[:, ['qw', 'qx', 'qy', 'qz', 'tx', 'ty', 'tz']] = C2CUtils.convert_cam_pos(cam_df.loc[:, ['x', 'y', 'z', 'pitch', 'yaw', 'roll']].to_numpy(copy=True))
+        self.__df['focal'] = cam_df['focal'].to_numpy(copy=True)
 
     def downsample(self):
         self.__read_images()

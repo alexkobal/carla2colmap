@@ -4,17 +4,19 @@
 # CONFIG #
 CURRENT_DIR=$PWD
 PRJ_WD=/home/sandor/GIT/carla2colmap/project
-IN_IMG=/home/sandor/GIT/carla2colmap/monopointcloud
-IN_CAM=/home/sandor/GIT/carla2colmap/monopointcloud
+IN_IMG=/home/sandor/GIT/carla2colmap/monopointcloud/08_15
+IN_IMG_FOLDER=rgb
+IN_CAM=/home/sandor/GIT/carla2colmap/monopointcloud/08_15
 CONFIGS=/home/sandor/GIT/carla2colmap/configs
-SAMP_NUM=512
+SAMP_NUM=128
 
 mkdir $PRJ_WD
-./carla2colmap/carla2colmap.sh -n $SAMP_NUM -c $IN_CAM $PRJ_WD $IN_IMG
+./carla2colmap/carla2colmap.sh -n $SAMP_NUM -c $IN_CAM -i $IN_IMG_FOLDER $PRJ_WD $IN_IMG
 cd $PRJ_WD
 # colmap feature_extractor --project_path $CONFIGS/feature_extractor.ini # already in the previous step
 colmap exhaustive_matcher --project_path $CONFIGS/exhaustive_matcher.ini
-colmap point_triangulator --project_path $CONFIGS/point_triangulator.ini 
+colmap point_triangulator --project_path $CONFIGS/point_triangulator.ini
+# colmap bundle_adjuster --project_path $CONFIGS/bundle_adjuster.ini
 # mkdir ./sparse # if camera poses are available, this will already exist
 # colmap mapper --project_path $CONFIGS/mapper.ini # needed only when camera poses are unknown
 mkdir $PRJ_WD/dense
