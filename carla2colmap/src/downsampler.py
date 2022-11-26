@@ -66,12 +66,15 @@ class Downsampler:
         self.__df.loc[:, ['qw', 'qx', 'qy', 'qz', 'tx', 'ty', 'tz']] = C2CUtils.convert_cam_pos(cam_df.loc[:, ['x', 'y', 'z', 'pitch', 'yaw', 'roll']].to_numpy(copy=True))
         self.__df['focal'] = cam_df['focal'].to_numpy(copy=True)
 
-    def downsample(self):
+
+    def downsample(self, strategy='linspace'):
+        # TODO: add a parameter for the sampling function. 
         self.__read_images()
         if st.USE_CAM: self.__read_cameras()
 
         # check if sample number was specified
         if st.SAMPLE_NUM > 0:
+
             ids = np.around(np.linspace(0, len(self.__df)-1, int(round(st.SAMPLE_NUM, 0))))
             ids = ids.astype("int")
         else:
